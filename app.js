@@ -5,8 +5,11 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const adminData = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+
+// import controllers
+const errorController = require('./controllers/error');
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,17 +29,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // consider routes in admin.js
 ////    funnel all admin things into this file/route
-app.use('/admin', adminData.routes);
+app.use('/admin', adminRoutes);
 // consider routes in shops.js
 ////    funnel all shop things into this file/route
 app.use(shopRoutes);
 
 // if no page is found --> send to 404 page
-app.use((req, res, next) => {
-    res.status(404).render('404', {
-        docTitle: '404 Page'
-    })
-});
+app.use(errorController.get404);
 
 // application listens to server via express.js
 app.listen(PORT);
