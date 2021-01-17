@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
+const PORT = process.env.PORT || 3000;
+
 // create app object
 const app = express();
 // import ejs
@@ -37,4 +39,4 @@ app.use((req, res, next) => {
 });
 
 // application listens to server via express.js
-app.listen(3000);
+app.listen(PORT);
