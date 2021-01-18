@@ -4,13 +4,19 @@
 const path = require('path');
 
 // import controllers
-const productsController = require('../controllers/products');
+const shopController = require('../controllers/shop');
 
 const express = require('express');
 
 // router is like a mini express app which we can export | Ex) Instead of const app = express(); it's const router = express.Router();
 const router = express.Router();
 
-router.get('/', productsController.getProducts);
+router.get('/', shopController.getIndex);
+router.get('/products', shopController.getProducts);
+router.get('/products/:productId', shopController.getProduct);
+router.get('/cart', shopController.getCart);
+router.post('/cart', shopController.postCart);
+router.get('/orders', shopController.getOrders);
+router.get('/checkout', shopController.getCheckout);
 
 module.exports = router;

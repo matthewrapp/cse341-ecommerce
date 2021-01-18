@@ -2,7 +2,7 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-    res.render('add-product', {
+    res.render('admin/add-product', {
         docTitle: 'Add Product Page',
         path: '/admin/add-product',
         formsCSS: true,
@@ -12,22 +12,22 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
+    const title = req.body.title;
+    const imageUrl = req.body.imageUrl;
+    const description = req.body.description;
+    const price = req.body.price;
     // create new object based on Product class
-    const product = new Product(req.body.title);
+    const product = new Product(title, imageUrl, description, price);
     product.save();
     res.redirect('/');
 };
 
 exports.getProducts = (req, res, next) => {
-    // fetch all products
-    const products = Product.fetchAll((products) => {
-        res.render('shop', {
-            docTitle: 'Shop Page',
-            path: '/shop',
+    Product.fetchAll((products) => {
+        res.render('admin/products', {
+            docTitle: 'Admin Products Page',
+            path: '/admin/products',
             prods: products,
-            hasProducts: products.length > 0,
-            activeShop: true,
-            productCSS: true
         });
     });
-};
+}
