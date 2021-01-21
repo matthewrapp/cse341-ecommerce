@@ -1,5 +1,7 @@
 <header class="main-header">
     <nav class="main-header__nav">
+        <h1 class="main-header__site-logo">Ecommerce Site</h1>
+        <!-- <i id="menuBtn" class="fas fa-bars"></i> -->
         <ul class="main-header__item-list">
             <li class="main-header__item">
                 <a href="/" class="<%= path === '/' ? 'active' : ''%>">Shop</a>
@@ -20,5 +22,11 @@
                 <a href="/admin/products" class="<%= path === '/admin/products' ? 'active' : ''%>">Admin Products</a>
             </li>
         </ul>
+        <div class="main-header__cart-div main-header__item-list">
+            <li class="main-header__item">
+                <a href="/cart" class="<%= path === '/cart' ? 'active' : ''%>">Cart</a>
+
+            </li>
+        </div>
     </nav>
 </header>
