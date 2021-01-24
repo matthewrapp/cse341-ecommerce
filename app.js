@@ -10,6 +10,7 @@ const shopRoutes = require('./routes/shop');
 
 // import controllers
 const errorController = require('./controllers/error');
+const database = require('./utilities/database');
 
 const PORT = process.env.PORT || 3000;
 
