@@ -98,7 +98,7 @@ sequelize
         return user.createCart();
     })
     .then(cart => {
-        // listen to port or 3000
+        // listen to port
         app.listen(PORT);
     })
     .catch(error => console.log('this is within the sync method in app.js: ' + error));
