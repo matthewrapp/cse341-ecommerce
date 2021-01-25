@@ -16,7 +16,9 @@ const getCircularReplacer = require('./utilities/circular-replacer');
 
 // import controllers
 const errorController = require('./controllers/error');
+console.log('Before MongoConnect');
 const mongoConnect = require('./utilities/database').mongoConnect;
+console.log('After MongoConnect');
 
 // create PORT
 const PORT = process.env.PORT || 3000;
