@@ -5,7 +5,7 @@ const Product = require('../models/product');
 const getCircularReplacer = require('../utilities/circular-replacer');
 
 exports.getProducts = (req, res, next) => {
-    Product.findAll()
+    Product.fetchAll()
         .then(products => {
             res.render('shop/product-list', {
                 docTitle: 'All Products Page',
@@ -18,7 +18,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
     const productId = req.params.productId;
-    Product.findByPk(productId)
+    Product.findById(productId)
         .then(product => {
             res.render('shop/product-detail', {
                 docTitle: product.title + ' Page',
@@ -30,7 +30,7 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.getIndex = (req, res, next) => {
-    Product.findAll()
+    Product.fetchAll()
         .then(products => {
             res.render('shop/index', {
                 docTitle: 'Shop Page',

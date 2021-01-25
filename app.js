@@ -10,19 +10,13 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 // import models
-const Product = require('./models/product');
-const User = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cart-item');
-const Order = require('./models/order');
-const OrderItem = require('./models/order-item');
 
 // import help functions
 const getCircularReplacer = require('./utilities/circular-replacer');
 
 // import controllers
 const errorController = require('./controllers/error');
-const sequelize = require('./utilities/database');
+const mongoConnect = require('./utilities/database').mongoConnect;
 
 // create PORT
 const PORT = process.env.PORT || 3000;
@@ -43,13 +37,14 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    // reach out to database and return user
-    User.findByPk(1)
-        .then(user => {
-            req.user = user;
-            next();
-        })
-        .catch(error => console.log('app.js, get User error: ' + error));
+    // // reach out to database and return user
+    // User.findByPk(1)
+    //     .then(user => {
+    //         req.user = user;
+    //         next();
+    //     })
+    //     .catch(error => console.log('app.js, get User error: ' + error));
+    next();
 })
 
 app.use('/admin', adminRoutes);
@@ -58,47 +53,7 @@ app.use(shopRoutes);
 // if no page is found --> send to 404 page
 app.use(errorController.get404);
 
-// relations || associations
-Product.belongsTo(User, {
-    constraints: true,
-    onDelete: 'CASCADE'
-});
-User.hasMany(Product);
-User.hasOne(Cart);
-Cart.belongsToMany(Product, {
-    through: CartItem
-});
-Product.belongsToMany(Cart, {
-    through: CartItem
-});
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, {
-    through: OrderItem
-});
-
-
-// based on your models, it automatically inspects them and creates tables for your models
-sequelize
-    .sync()
-    .then(result => {
-        // create user
-        return User.findByPk(1);
-    }).then(user => {
-        if (!user) {
-            return User.create({
-                name: 'Matthew',
-                email: 'fake@fake.com'
-            })
-        }
-        return user;
-    })
-    .then(user => {
-        // console.log('app.js, sequelize.sync(), User: ' + JSON.stringify(user, getCircularReplacer()));
-        return user.createCart();
-    })
-    .then(cart => {
-        // listen to port
-        app.listen(PORT);
-    })
-    .catch(error => console.log('this is within the sync method in app.js: ' + error));
+mongoConnect(() => {
+    // console.log('app.js | ' + JSON.stringify(client, getCircularReplacer()));
+    app.listen(PORT);
+})
