@@ -47,7 +47,7 @@ app.use((req, res, next) => {
     User.findByPk(1)
         .then(user => {
             req.user = user;
-            next();
+            // next();
         })
         .catch(error => console.log('app.js, get User error: ' + error));
 })
