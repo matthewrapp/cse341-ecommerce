@@ -97,8 +97,10 @@ sequelize
         // console.log('app.js, sequelize.sync(), User: ' + JSON.stringify(user, getCircularReplacer()));
         return user.createCart();
     })
-    .then(cart => {
-        // listen to port or 3000
-        app.listen(PORT);
-    })
+    // .then(cart => {
+    //     // listen to port or 3000
+    //     app.listen(PORT);
+    // })
     .catch(error => console.log('this is within the sync method in app.js: ' + error));
+
+app.listen(PORT);
