@@ -9,16 +9,15 @@ const bodyParser = require('body-parser');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
+// import controllers
+const errorController = require('./controllers/error');
+const mongoConnect = require('./utilities/database').mongoConnect;
+
 // import models
+const User = require('./models/user');
 
 // import help functions
 const getCircularReplacer = require('./utilities/circular-replacer');
-
-// import controllers
-const errorController = require('./controllers/error');
-console.log('Before MongoConnect');
-const mongoConnect = require('./utilities/database').mongoConnect;
-console.log('After MongoConnect');
 
 // create PORT
 const PORT = process.env.PORT || 3000;
@@ -39,14 +38,13 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    // // reach out to database and return user
-    // User.findByPk(1)
-    //     .then(user => {
-    //         req.user = user;
-    //         next();
-    //     })
-    //     .catch(error => console.log('app.js, get User error: ' + error));
-    next();
+    // reach out to database and return user
+    User.findById('60105a09f967051ba5484ffc')
+        .then(user => {
+            req.user = new User(user.name, user.email, user.cart, user._id);
+            next();
+        })
+        .catch(error => console.log('app.js, get User error: ' + error));
 })
 
 app.use('/admin', adminRoutes);

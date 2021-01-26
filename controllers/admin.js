@@ -17,7 +17,8 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    const product = new Product(title, price, description, imageUrl);
+    const user = req.user._id;
+    const product = new Product(title, price, description, imageUrl, null, user);
     product.save()
         .then(result => {
             res.redirect('/admin/products');
@@ -80,14 +81,11 @@ exports.getProducts = (req, res, next) => {
     //     // });
 }
 
-// exports.postDeleteProduct = (req, res, next) => {
-//     const prodId = req.body.productId;
-//     Product.findByPk(prodId)
-//         .then(product => {
-//             return product.destroy();
-//         })
-//         .then(result => console.log('admin.js, destroyed product: ' + JSON.stringify(reuslt, getCircularReplacer())))
-//         .catch(error => console.log('admin.js, postDeleteProduct: ' + error));
-//     res.redirect('/admin/products');
-
-// }
+exports.postDeleteProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+    Product.deleteById(prodId)
+        .then(() => {
+            res.redirect('/admin/products');
+        })
+        .catch(error => console.log('admin.js, postDeleteProduct: ' + error));
+}

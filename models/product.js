@@ -8,12 +8,13 @@ const mongodb = require('mongodb');
 const getDb = require('../utilities/database').getDb;
 
 class Product {
-    constructor(title, price, description, imageUrl, id) {
+    constructor(title, price, description, imageUrl, id, userId) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
-        this._id = new mongodb.ObjectId(id);
+        this._id = id ? new mongodb.ObjectId(id) : null;
+        this.userId = userId;
     }
 
     save() {
@@ -32,7 +33,7 @@ class Product {
         }
         return dbOperation
             .then(result => {
-                console.log('this is the result' + result);
+
             })
             .catch(err => console.log('product.js | save() method, Error Handling: ' + err));
     }
@@ -41,7 +42,6 @@ class Product {
         const db = getDb();
         return db.collection('products').find().toArray()
             .then(products => {
-                console.log('products.js | fetchAll() method, Products returned: ' + products);
                 return products;
             })
             .catch(err => console.log('product.js | fetchAll() method, Error Handling: ' + err));
@@ -54,10 +54,18 @@ class Product {
             })
             .next()
             .then(product => {
-                console.log('products.js | fetchAll() method, Product returned: ' + product);
                 return product;
             })
             .catch(err => console.log('product.js | findById() method, Error Handling: ' + err));
+    }
+
+    static deleteById(prodId) {
+        const db = getDb();
+        return db.collection('products').deleteOne({
+                _id: new mongodb.ObjectId(prodId)
+            })
+            .then(prodId + ' deleted!')
+            .catch(err => console.log('product.js | deleteById() method, Error Handling: ' + err));
     }
 
 }
