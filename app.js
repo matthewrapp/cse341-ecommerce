@@ -4,6 +4,7 @@ const path = require('path');
 // Third party packages
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 // import routes
 const adminRoutes = require('./routes/admin');
@@ -11,7 +12,6 @@ const shopRoutes = require('./routes/shop');
 
 // import controllers
 const errorController = require('./controllers/error');
-const mongoConnect = require('./utilities/database').mongoConnect;
 
 // import models
 const User = require('./models/user');
@@ -39,9 +39,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
     // reach out to database and return user
-    User.findById('60105a09f967051ba5484ffc')
+    User.findById('6010d6100202953dec5766fc')
         .then(user => {
-            req.user = new User(user.name, user.email, user.cart, user._id);
+            req.user = user;
             next();
         })
         .catch(error => console.log('app.js, get User error: ' + error));
@@ -53,7 +53,25 @@ app.use(shopRoutes);
 // if no page is found --> send to 404 page
 app.use(errorController.get404);
 
-mongoConnect(() => {
-    // console.log('app.js | ' + JSON.stringify(client, getCircularReplacer()));
-    app.listen(PORT);
-})
+mongoose.connect('mongodb+srv://matthewrapp:GK2uY8VGgnCKYKwf@cluster0.hw43b.mongodb.net/shop?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(result => {
+        User.findOne().then(user => {
+            if (!user) {
+                const user = new User({
+                    name: 'Max',
+                    email: 'max@test.com',
+                    cart: {
+                        items: []
+                    }
+                });
+                user.save();
+            }
+        });
+        app.listen(PORT);
+    })
+    .catch(err => {
+        console.log('Error connecting to Mongoose: ' + error);
+    })

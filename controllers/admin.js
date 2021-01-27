@@ -17,9 +17,15 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    const user = req.user._id;
-    const product = new Product(title, price, description, imageUrl, null, user);
-    product.save()
+    // const user = req.user._id;
+    const product = new Product({
+        title: title,
+        price: price,
+        description: description,
+        imageUrl: imageUrl,
+        userId: req.user._id
+    });
+    product.save() // this save method is created by mongoose
         .then(result => {
             res.redirect('/admin/products');
         })
@@ -53,8 +59,14 @@ exports.postEditProduct = (req, res, next) => {
     const updatedPrice = req.body.price;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDescription = req.body.description;
-    const product = new Product(updatedTitle, updatedPrice, updatedDescription, updatedImageUrl, prodId);
-    product.save()
+    Product.findById(prodId)
+        .then(product => {
+            product.title = updatedTitle;
+            product.price = updatedPrice;
+            product.description = updatedDescription;
+            product.imageUrl = updatedImageUrl;
+            return product.save()
+        })
         .then(result => {
             console.log('admin.js, postEditProduct UPDATED PRODUCT: ' + JSON.stringify(result, getCircularReplacer()));
             res.redirect('/admin/products');
@@ -63,27 +75,22 @@ exports.postEditProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
+    Product.find()
+        // .select('title price -_id')
+        // .populate('userId', 'name -_id')
         .then(products => {
             res.render('admin/products', {
                 docTitle: 'Admin Products Page',
                 path: '/admin/products',
                 prods: products,
             });
-        }).catch(error => console.log('admin.js, getProducts error handling: ' + error))
-
-    //     // Product.fetchAll((products) => {
-    //     //     res.render('admin/products', {
-    //     //         docTitle: 'Admin Products Page',
-    //     //         path: '/admin/products',
-    //     //         prods: products,
-    //     //     });
-    //     // });
+        })
+        .catch(error => console.log('admin.js, getProducts error handling: ' + error));
 }
 
 exports.postDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId;
-    Product.deleteById(prodId)
+    Product.findByIdAndRemove(prodId)
         .then(() => {
             res.redirect('/admin/products');
         })
