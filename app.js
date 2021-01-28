@@ -5,6 +5,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // import routes
 const adminRoutes = require('./routes/admin');
@@ -53,10 +54,21 @@ app.use(shopRoutes);
 // if no page is found --> send to 404 page
 app.use(errorController.get404);
 
-mongoose.connect('mongodb+srv://matthewrapp:GK2uY8VGgnCKYKwf@cluster0.hw43b.mongodb.net/shop?retryWrites=true&w=majority', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
+const corsOptions = {
+    orgin: 'https://cse341matthewrapp-ecommerce.herokuapp.com',
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+const options = {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    family: 4
+};
+const MONGODB_URL = process.env.MONGODB_URL || 'mongodb+srv://matthewrapp:GK2uY8VGgnCKYKwf@cluster0.hw43b.mongodb.net/shop?retryWrites=true&w=majority';
+
+mongoose.connect(MONGODB_URL, options)
     .then(result => {
         User.findOne().then(user => {
             if (!user) {
