@@ -1,6 +1,5 @@
 // Page Details:
 ////   what the user sees
-
 const path = require('path');
 
 // import controllers
