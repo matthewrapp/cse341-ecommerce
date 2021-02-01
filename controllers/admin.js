@@ -8,7 +8,8 @@ exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
         docTitle: 'Add Product Page',
         path: '/admin/add-product',
-        editing: false
+        editing: false,
+        isAuthenticated: req.session.isLoggedIn
     })
 };
 
@@ -17,13 +18,12 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    // const user = req.user._id;
     const product = new Product({
         title: title,
         price: price,
         description: description,
         imageUrl: imageUrl,
-        userId: req.user._id
+        userId: req.user
     });
     product.save() // this save method is created by mongoose
         .then(result => {
@@ -48,7 +48,8 @@ exports.getEditProduct = (req, res, next) => {
                 docTitle: 'Edit Product Page',
                 path: '/admin/edit-product',
                 editing: editMode,
-                product: product
+                product: product,
+                isAuthenticated: req.session.isLoggedIn
             })
         }).catch(error => console.log('admin.js, getEditProduct error handling: ' + error));
 }
@@ -83,6 +84,7 @@ exports.getProducts = (req, res, next) => {
                 docTitle: 'Admin Products Page',
                 path: '/admin/products',
                 prods: products,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(error => console.log('admin.js, getProducts error handling: ' + error));
