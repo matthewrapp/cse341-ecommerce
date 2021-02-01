@@ -13,7 +13,11 @@ exports.postLogin = (req, res, next) => {
         .then(user => {
             req.session.isLoggedIn = true;
             req.session.user = user;
-            res.redirect('/');
+            // need to call save if the page is loading too fast before the database can update the page
+            req.session.save((err) => {
+                console.log(err + ' within .then() within postLogin');
+                res.redirect('/');
+            });
         })
         .catch(error => console.log('app.js, get User error: ' + error));
 };
