@@ -12,6 +12,7 @@ exports.getProducts = (req, res, next) => {
                 docTitle: 'All Products Page',
                 path: '/products',
                 prods: products,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(error => console.log('getIndex Error Handling: ' + error));
@@ -24,7 +25,8 @@ exports.getProduct = (req, res, next) => {
             res.render('shop/product-detail', {
                 docTitle: product.title + ' Page',
                 product: product,
-                path: '/products'
+                path: '/products',
+                isAuthenticated: req.session.isLoggedIn
             })
         })
         .catch(error => console.log('getProduct Error Handling: ' + error));
@@ -37,6 +39,7 @@ exports.getIndex = (req, res, next) => {
                 docTitle: 'Shop Page',
                 path: '/',
                 prods: products,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(error => console.log('getIndex Error Handling: ' + error));
@@ -47,11 +50,11 @@ exports.getCart = (req, res, next) => {
         .execPopulate()
         .then(user => {
             const products = user.cart.items;
-            // get products within the cart
             res.render('shop/cart', {
-                docTitle: 'Cart Page',
                 path: '/cart',
-                products: products
+                docTitle: 'Your Cart',
+                products: products,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(error => console.log('shop.js, getCart() Error Handling: ' + error))
@@ -116,7 +119,8 @@ exports.getOrders = (req, res, next) => {
             res.render('shop/orders', {
                 path: '/orders',
                 docTitle: 'Your Orders',
-                orders: orders
+                orders: orders,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(err => {

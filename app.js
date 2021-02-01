@@ -6,10 +6,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 // import routes
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
 // import controllers
 const errorController = require('./controllers/error');
@@ -22,9 +25,14 @@ const getCircularReplacer = require('./utilities/circular-replacer');
 
 // create PORT
 const PORT = process.env.PORT || 3000;
+const MONGODB_URL = process.env.MONGODB_URL || 'mongodb+srv://matthewrapp:GK2uY8VGgnCKYKwf@cluster0.hw43b.mongodb.net/shop?retryWrites=true&w=majority';
 
 // create app object
 const app = express();
+const store = new MongoDBStore({
+    uri: MONGODB_URL,
+    collection: 'sessions'
+});
 
 // import ejs
 app.set('view engine', 'ejs');
@@ -37,10 +45,18 @@ app.use(bodyParser.urlencoded({
 }));
 // static files | static files, path is automatically put into public folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+}));
 
 app.use((req, res, next) => {
-    // reach out to database and return user
-    User.findById('6010d6100202953dec5766fc')
+    if (!req.session.user) {
+        return next();
+    }
+    User.findById(req.session.user._id)
         .then(user => {
             req.user = user;
             next();
@@ -50,6 +66,7 @@ app.use((req, res, next) => {
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 // if no page is found --> send to 404 page
 app.use(errorController.get404);
@@ -66,7 +83,6 @@ const options = {
     useFindAndModify: false,
     family: 4
 };
-const MONGODB_URL = process.env.MONGODB_URL || 'mongodb+srv://matthewrapp:GK2uY8VGgnCKYKwf@cluster0.hw43b.mongodb.net/shop?retryWrites=true&w=majority';
 
 mongoose.connect(MONGODB_URL, options)
     .then(result => {

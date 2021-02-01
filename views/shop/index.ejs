@@ -20,9 +20,11 @@
                     </p>
                 </div>
                 <div class="card__actions">
+                    <% if (isAuthenticated) { %>
                     <%- include('../includes/add-to-cart.ejs', {
                         product: product
                     }) %>
+                    <% } %>
                 </div>
             </article>
             <% } %>
