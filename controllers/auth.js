@@ -5,18 +5,30 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
+    let errorMessage = req.flash('error');
+    if (errorMessage.length > 0) {
+        errorMessage = errorMessage[0];
+    } else {
+        errorMessage = null
+    }
     res.render('auth/login', {
         path: '/login',
         docTitle: 'Login Page',
-        isAuthenticated: req.session.isLoggedIn
+        errorMessage: errorMessage
     });
 };
 
 exports.getSignup = (req, res, next) => {
+    let errorMessage = req.flash('error');
+    if (errorMessage.length > 0) {
+        errorMessage = errorMessage[0];
+    } else {
+        errorMessage = null
+    }
     res.render('auth/signup', {
         path: '/signup',
         docTitle: 'Signup Page',
-        isAuthenticated: false
+        errorMessage: errorMessage
     });
 }
 
@@ -28,6 +40,7 @@ exports.postLogin = (req, res, next) => {
         })
         .then(user => {
             if (!user) {
+                req.flash('error', 'Invalid email or password.');
                 return res.redirect('/login');
             }
             bcrypt.compare(password, user.password)
@@ -41,6 +54,7 @@ exports.postLogin = (req, res, next) => {
                             res.redirect('/');
                         });
                     }
+                    req.flash('error', 'Invalid email or password.');
                     res.redirect('/login');
                 })
                 .catch(err => {
@@ -63,6 +77,7 @@ exports.postSignup = (req, res, next) => {
         })
         .then(userDocument => {
             if (userDocument) {
+                req.flash('error', 'Email already exists. Please user another email.');
                 return res.redirect('/signup');
             }
             return bcrypt.hash(password, 12)
@@ -76,7 +91,12 @@ exports.postSignup = (req, res, next) => {
                             items: []
                         }
                     });
-                    return user.save();
+                    if (confirmPassword != password) {
+                        req.flash('error', 'Passwords do not match. Please try again.');
+                        return res.redirect('/signup');
+                    } else {
+                        return user.save();
+                    }
                 })
                 .then(result => {
                     res.redirect('/login');
