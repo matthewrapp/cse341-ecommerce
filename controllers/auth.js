@@ -1,8 +1,16 @@
 // import 3rd party packages
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 // import models
 const User = require('../models/user');
+
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_user: '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'
+    }
+}));
 
 exports.getLogin = (req, res, next) => {
     let errorMessage = req.flash('error');
@@ -100,6 +108,16 @@ exports.postSignup = (req, res, next) => {
                 })
                 .then(result => {
                     res.redirect('/login');
+                    // send email
+                    return transporter.sendMail({
+                        to: email,
+                        from: 'mattrapp25@gmail.com',
+                        subject: 'Signup Succeeded!',
+                        html: '<h1>You successfully signed up!</h1>'
+                    })
+                })
+                .catch(err => {
+                    console.log('auth.js | postSignUp() | Error with email | Error Handling: ' + err)
                 });
         })
         .catch(err => {
