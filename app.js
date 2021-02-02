@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
+const flash = require('connect-flash');
 
 // import routes
 const adminRoutes = require('./routes/admin');
@@ -34,6 +36,9 @@ const store = new MongoDBStore({
     collection: 'sessions'
 });
 
+// initial csurf protection/token
+const csrfProtection = csrf();
+
 // import ejs
 app.set('view engine', 'ejs');
 // telling express that the templates will be under the views folder | default is views | 2nd parameter
@@ -51,6 +56,8 @@ app.use(session({
     saveUninitialized: false,
     store: store
 }));
+app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
     if (!req.session.user) {
@@ -62,6 +69,12 @@ app.use((req, res, next) => {
             next();
         })
         .catch(error => console.log('app.js, get User error: ' + error));
+});
+
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
 })
 
 app.use('/admin', adminRoutes);
@@ -86,18 +99,6 @@ const options = {
 
 mongoose.connect(MONGODB_URL, options)
     .then(result => {
-        User.findOne().then(user => {
-            if (!user) {
-                const user = new User({
-                    name: 'Max',
-                    email: 'max@test.com',
-                    cart: {
-                        items: []
-                    }
-                });
-                user.save();
-            }
-        });
         app.listen(PORT);
     })
     .catch(err => {

@@ -1,25 +1,110 @@
+// import 3rd party packages
+const bcrypt = require('bcryptjs');
+
+// import models
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
+    let errorMessage = req.flash('error');
+    if (errorMessage.length > 0) {
+        errorMessage = errorMessage[0];
+    } else {
+        errorMessage = null
+    }
     res.render('auth/login', {
         path: '/login',
         docTitle: 'Login Page',
-        isAuthenticated: req.session.isLoggedIn
+        errorMessage: errorMessage
     });
 };
 
+exports.getSignup = (req, res, next) => {
+    let errorMessage = req.flash('error');
+    if (errorMessage.length > 0) {
+        errorMessage = errorMessage[0];
+    } else {
+        errorMessage = null
+    }
+    res.render('auth/signup', {
+        path: '/signup',
+        docTitle: 'Signup Page',
+        errorMessage: errorMessage
+    });
+}
+
 exports.postLogin = (req, res, next) => {
-    User.findById('6010d6100202953dec5766fc')
+    const email = req.body.email;
+    const password = req.body.password;
+    User.findOne({
+            email: email
+        })
         .then(user => {
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-            // need to call save if the page is loading too fast before the database can update the page
-            req.session.save((err) => {
-                console.log(err + ' within .then() within postLogin');
-                res.redirect('/');
-            });
+            if (!user) {
+                req.flash('error', 'Invalid email or password.');
+                return res.redirect('/login');
+            }
+            bcrypt.compare(password, user.password)
+                .then(doMatch => {
+                    if (doMatch) {
+                        req.session.isLoggedIn = true;
+                        req.session.user = user;
+                        // need to call save if the page is loading too fast before the database can update the page
+                        return req.session.save((err) => {
+                            console.log(err + ' within .then() within postLogin');
+                            res.redirect('/');
+                        });
+                    }
+                    req.flash('error', 'Invalid email or password.');
+                    res.redirect('/login');
+                })
+                .catch(err => {
+                    console.log('auth.js | postLogin | Error Handling: ' + err);
+                    res.redirect('/login');
+                });
         })
         .catch(error => console.log('app.js, get User error: ' + error));
+};
+
+exports.postSignup = (req, res, next) => {
+    const email = req.body.email;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
+
+    User.findOne({
+            email: email
+        })
+        .then(userDocument => {
+            if (userDocument) {
+                req.flash('error', 'Email already exists. Please user another email.');
+                return res.redirect('/signup');
+            }
+            return bcrypt.hash(password, 12)
+                .then(hashedPassword => {
+                    const user = new User({
+                        email: email,
+                        firstName: firstName,
+                        lastName: lastName,
+                        password: hashedPassword,
+                        cart: {
+                            items: []
+                        }
+                    });
+                    if (confirmPassword != password) {
+                        req.flash('error', 'Passwords do not match. Please try again.');
+                        return res.redirect('/signup');
+                    } else {
+                        return user.save();
+                    }
+                })
+                .then(result => {
+                    res.redirect('/login');
+                });
+        })
+        .catch(err => {
+            console.log('auth.js | postSignup | Error Authentication: ' + err)
+        });
 };
 
 exports.postLogout = (req, res, next) => {
