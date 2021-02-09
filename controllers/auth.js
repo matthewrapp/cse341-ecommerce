@@ -5,6 +5,9 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const {
+    validationResult
+} = require('express-validator')
 
 // import models
 const User = require('../models/user');
@@ -42,13 +45,35 @@ exports.getSignup = (req, res, next) => {
     res.render('auth/signup', {
         path: '/signup',
         docTitle: 'Signup Page',
-        errorMessage: errorMessage
+        errorMessage: errorMessage,
+        oldInput: {
+            email: "",
+            firstName: "",
+            lastName: "",
+            password: "",
+            confirmPassword: ""
+        },
+        validationErrors: []
     });
 }
 
 exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/login', {
+            path: '/login',
+            docTitle: 'Login Page',
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+                email: email,
+                password: password
+            }
+        });
+    }
+
     User.findOne({
             email: email
         })
@@ -85,46 +110,48 @@ exports.postSignup = (req, res, next) => {
     const lastName = req.body.lastName;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
-
-    User.findOne({
-            email: email
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors.array());
+        return res.status(422).render(res.render('auth/signup', {
+            path: '/signup',
+            docTitle: 'Signup Page',
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                password: password,
+                confirmPassword: confirmPassword
+            },
+            validationErrors: errors.array()
+        }));
+    }
+    bcrypt.hash(password, 12)
+        .then(hashedPassword => {
+            const user = new User({
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                password: hashedPassword,
+                cart: {
+                    items: []
+                }
+            });
+            return user.save();
         })
-        .then(userDocument => {
-            if (userDocument) {
-                req.flash('error', 'Email already exists. Please user another email.');
-                return res.redirect('/signup');
-            }
-            return bcrypt.hash(password, 12)
-                .then(hashedPassword => {
-                    const user = new User({
-                        email: email,
-                        firstName: firstName,
-                        lastName: lastName,
-                        password: hashedPassword,
-                        cart: {
-                            items: []
-                        }
-                    });
-                    if (confirmPassword != password) {
-                        req.flash('error', 'Passwords do not match. Please try again.');
-                        return res.redirect('/signup');
-                    } else {
-                        return user.save();
-                    }
-                })
-                .then(result => {
-                    res.redirect('/login');
-                    // send email
-                    return transporter.sendMail({
-                        to: email,
-                        from: 'mattrapp25@gmail.com',
-                        subject: 'Signup Succeeded!',
-                        html: '<h1>You successfully signed up!</h1>'
-                    })
-                })
-                .catch(err => {
-                    console.log('auth.js | postSignUp() | Error with email | Error Handling: ' + err)
-                });
+        .then(result => {
+            res.redirect('/login');
+            // send email
+            return transporter.sendMail({
+                to: email,
+                from: 'mattrapp25@gmail.com',
+                subject: 'Signup Succeeded!',
+                html: '<h1>You successfully signed up!</h1>'
+            })
+        })
+        .catch(err => {
+            console.log('auth.js | postSignUp() | Error with email | Error Handling: ' + err)
         })
         .catch(err => {
             console.log('auth.js | postSignup | Error Authentication: ' + err)
@@ -224,46 +251,44 @@ exports.getNewPassword = (req, res, next) => {
 
 exports.postNewPassword = (req, res, next) => {
     const newPassword = req.body.password;
-    const confirmNewPassword = req.body.confirmPassword;
     const userId = req.body.userId;
     const passwordToken = req.body.passwordToken;
     console.log(req.body);
     let resetUser;
 
-    if (confirmNewPassword != newPassword) {
-        req.flash('error', 'Passwords do not match. Please try again.');
-        return res.redirect(`/reset/${passwordToken}`);
-    } else {
-        User.findOne({
-                resetToken: passwordToken,
-                resetTokenExpiration: {
-                    $gt: Date.now()
-                },
-                _id: userId
-            })
-            .then(user => {
-                resetUser = user;
-                return bcrypt.hash(newPassword, 12);
-            })
-            .then(hashedPassword => {
-                resetUser.password = hashedPassword
-                resetUser.resetToken = undefined;
-                resetUser.resetTokenExpiration = undefined;
-                return resetUser.save();
-            })
-            .then(result => {
-                res.redirect('/login');
-                return transporter.sendMail({
-                    to: req.body.email,
-                    from: 'mattrapp25@gmail.com',
-                    subject: 'Password has been reset!',
-                    html: `
+    // if (confirmNewPassword != newPassword) {
+    //     req.flash('error', 'Passwords do not match. Please try again.');
+    //     return res.redirect(`/reset/${passwordToken}`);
+    // } else { }
+    User.findOne({
+            resetToken: passwordToken,
+            resetTokenExpiration: {
+                $gt: Date.now()
+            },
+            _id: userId
+        })
+        .then(user => {
+            resetUser = user;
+            return bcrypt.hash(newPassword, 12);
+        })
+        .then(hashedPassword => {
+            resetUser.password = hashedPassword
+            resetUser.resetToken = undefined;
+            resetUser.resetTokenExpiration = undefined;
+            return resetUser.save();
+        })
+        .then(result => {
+            res.redirect('/login');
+            return transporter.sendMail({
+                to: req.body.email,
+                from: 'mattrapp25@gmail.com',
+                subject: 'Password has been reset!',
+                html: `
                         <p>Password Has been reset!</p>
                     `
-                });
-            })
-            .catch(err => {
-                console.log('auth.js | postNewPassword() | Error Handling: ' + err)
             });
-    }
+        })
+        .catch(err => {
+            console.log('auth.js | postNewPassword() | Error Handling: ' + err)
+        });
 }
