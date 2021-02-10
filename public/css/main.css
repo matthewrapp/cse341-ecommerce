@@ -19,6 +19,10 @@ form {
     display: inline;
 }
 
+h1 {
+    font-size: 44px;
+}
+
 .centered {
     text-align: center;
 }
@@ -34,7 +38,9 @@ form {
 .main-header {
     width: 100%;
     height: 3.5rem;
-    background-color: #00695c;
+    /* background-color: #00695c; */
+    background-color: #fff;
+    border-bottom: 1px solid #999;
     padding: 0 1.5rem;
     display: flex;
     align-items: center;
@@ -66,7 +72,7 @@ form {
     background: transparent;
     border: none;
     text-decoration: none;
-    color: white;
+    color: rgb(74, 74, 74);
     cursor: pointer;
 }
 
@@ -75,11 +81,11 @@ form {
 .main-header__item a.active,
 .main-header__item button:hover,
 .main-header__item button:active {
-    color: #ffeb3b;
+    color: #2e7f9d;
 }
 
 .mobile-nav {
-    width: 30rem;
+    width: 24rem;
     height: 100vh;
     max-width: 90%;
     position: fixed;
@@ -119,18 +125,18 @@ form {
 .mobile-nav__item a:active,
 .mobile-nav__item a:hover,
 .mobile-nav__item a.active {
-    background: #00695c;
+    background: #00a894;
     color: white;
     border-radius: 3px;
 }
 
 #side-menu-toggle {
-    border: 1px solid white;
+    border: 1px solid #00a894;
     font: inherit;
     padding: 0.5rem;
     display: block;
     background: transparent;
-    color: white;
+    color: #00a894;
     cursor: pointer;
 }
 
@@ -140,8 +146,8 @@ form {
 
 #side-menu-toggle:active,
 #side-menu-toggle:hover {
-    color: #ffeb3b;
-    border-color: #ffeb3b;
+    color: #00a894;
+    border-color: #00a894;
 }
 
 .backdrop {
@@ -158,11 +164,11 @@ form {
 .grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: stretch;
 }
 
-.card {
+.card:hover{
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
 
@@ -180,6 +186,7 @@ form {
 
 .card__image {
     width: 100%;
+    padding: 20px;
 }
 
 .card__image img {
@@ -201,17 +208,35 @@ form {
     padding: 0.25rem 1rem;
     text-decoration: none;
     font: inherit;
-    border: 1px solid #00695c;
-    color: #00695c;
-    background: white;
+    border: 1px solid #00a894;
+    color: #fff;
+    background: #00a894;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 0.25rem 1rem;
+    text-decoration: none;
+    font: inherit;
+    border: 1px solid #00a894;
+    color: #00a894;
+    background: #fff;
     border-radius: 3px;
     cursor: pointer;
 }
 
 .btn:hover,
 .btn:active {
-    background-color: #00695c;
-    color: white;
+    background-color: #fff;
+    color: #00a894;
+}
+
+.btn-outline:hover,
+.btn-outline:active {
+    background-color: #00a894;
+    color: #fff;
 }
 
 .btn.danger {
@@ -250,5 +275,11 @@ form {
 
     .user-message {
         width: 30rem;
+    }
+}
+
+@media (max-width: 620px) {
+    .grid {
+        justify-content: center;
     }
 }
