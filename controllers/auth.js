@@ -11,9 +11,6 @@ const {
 
 // import models
 const User = require('../models/user');
-const {
-    reset
-} = require('nodemon');
 
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
