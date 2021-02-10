@@ -120,7 +120,11 @@ exports.postLogin = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(error => console.log('app.js, get User error: ' + error));
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 exports.postSignup = (req, res, next) => {
@@ -170,10 +174,9 @@ exports.postSignup = (req, res, next) => {
             })
         })
         .catch(err => {
-            console.log('auth.js | postSignUp() | Error with email | Error Handling: ' + err)
-        })
-        .catch(err => {
-            console.log('auth.js | postSignup | Error Authentication: ' + err)
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
 
@@ -232,7 +235,9 @@ exports.postReset = (req, res, next) => {
                 });
             })
             .catch(err => {
-                console.log('auth.js | postReset() | Error Handling: ' + err)
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             });
     })
 };
@@ -264,7 +269,9 @@ exports.getNewPassword = (req, res, next) => {
 
         })
         .catch(err => {
-            console.log('auth.js | getNewPassword() | Error Handling: ' + err)
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
 
@@ -308,6 +315,8 @@ exports.postNewPassword = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.log('auth.js | postNewPassword() | Error Handling: ' + err)
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 }
