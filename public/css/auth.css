@@ -1,6 +1,43 @@
-.login-form {
+.login-form, 
+.password-reset--div {
     width: 20rem;
     max-width: 90%;
     margin: auto;
     display: block;
+}
+
+.password-reset--div {
+    margin-top: 20px;
+}
+
+#loginMain {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    max-width: 1000px;
+}
+
+#loginMain .col {
+    width: 50%;
+}
+
+#loginMain .image-holder {
+    background: url('https://www.sweetwater.com/insync/media/2021/02/Big-Pedals-that-are-Worth-the-Space-Featured-Image.jpg');
+    background-position: center;
+    background-size: cover;
+    width: 50%;
+}
+
+@media (max-width: 620px) {
+    #loginMain {
+        flex-flow: column;
+    }
+
+    #loginMain .col {
+        width: 100%;
+    }
+
+    #loginMain .image-holder {
+        display: none;
+    }
 }

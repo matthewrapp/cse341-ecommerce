@@ -2,6 +2,12 @@
 
 <body>
     <%- include('../includes/navigation.ejs') %>
+    <div class="heroImage">
+        <div class="heroContents">
+            <h1>View Our Latest & Greatest!</h1>
+            <p>The best music equipment you can find for the best price!</p>
+        </div>
+    </div>
     <main>
         <% if (prods.length > 0) { %>
         <div class="grid">
@@ -20,11 +26,11 @@
                     </p>
                 </div>
                 <div class="card__actions">
-                    <% if (isAuthenticated) { %>
-                    <%- include('../includes/add-to-cart.ejs', {
+                    <a href="/products/<%= product._id %>" class="btn">Shop This Deal</a>
+                    <%# include('../includes/add-to-cart.ejs', {
                         product: product
                     }) %>
-                    <% } %>
+
                 </div>
             </article>
             <% } %>
