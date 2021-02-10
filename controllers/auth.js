@@ -136,7 +136,7 @@ exports.postSignup = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         console.log(errors.array());
-        return res.status(422).render(res.render('auth/signup', {
+        return res.status(422).render('auth/signup', {
             path: '/signup',
             docTitle: 'Signup Page',
             errorMessage: errors.array()[0].msg,
@@ -148,7 +148,7 @@ exports.postSignup = (req, res, next) => {
                 confirmPassword: confirmPassword
             },
             validationErrors: errors.array()
-        }));
+        });
     }
     bcrypt.hash(password, 12)
         .then(hashedPassword => {
@@ -230,7 +230,7 @@ exports.postReset = (req, res, next) => {
                     subject: 'Password Reset',
                     html: `
                         <p>You requested password reset.</p>
-                        <p>Click this <a href="/reset/${token}">link</a> to set a new password.</p>
+                        <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
                     `
                 });
             })
@@ -244,6 +244,12 @@ exports.postReset = (req, res, next) => {
 
 exports.getNewPassword = (req, res, next) => {
     const token = req.params.token;
+    let errorMessage = req.flash('error');
+    if (errorMessage.length > 0) {
+        errorMessage = errorMessage[0];
+    } else {
+        errorMessage = null
+    }
     User.findOne({
             resetToken: token,
             resetTokenExpiration: {
@@ -264,7 +270,12 @@ exports.getNewPassword = (req, res, next) => {
                 errorMessage: errorMessage,
                 userId: user._id.toString(),
                 passwordToken: token,
-                email: user.email
+                email: user.email,
+                oldInput: {
+                    email: '',
+                    password: ''
+                },
+                validationErrors: []
             });
 
         })
@@ -279,8 +290,27 @@ exports.postNewPassword = (req, res, next) => {
     const newPassword = req.body.password;
     const userId = req.body.userId;
     const passwordToken = req.body.passwordToken;
-    console.log(req.body);
+    const confirmNewPassword = req.body.confirmPassword;
     let resetUser;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors.array());
+        console.log(errors.array()[0].msg)
+        return res.render('auth/new-password' /* this is the view path */ , {
+            path: '/new-password',
+            docTitle: 'Update Password Page',
+            errorMessage: errors.array()[0].msg,
+            userId: userId.toString(),
+            passwordToken: passwordToken,
+            email: req.body.email,
+            oldInput: {
+                password: newPassword,
+                confirmPassword: confirmNewPassword
+            },
+            validationErrors: errors.array()
+        });
+    }
 
     // if (confirmNewPassword != newPassword) {
     //     req.flash('error', 'Passwords do not match. Please try again.');

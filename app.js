@@ -87,7 +87,7 @@ app.use(shopRoutes);
 app.use(authRoutes);
 
 // error handling
-app.use('/500', errorController.get500);
+// app.use('/500', errorController.get500);
 // if no page is found --> send to 404 page
 app.use(errorController.get404);
 app.use((error, req, res, next) => {

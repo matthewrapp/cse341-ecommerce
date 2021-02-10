@@ -72,6 +72,26 @@ router.post('/logout', authController.postLogout);
 router.get('/reset', authController.getReset);
 router.post('/reset', authController.postReset);
 router.get('/reset/:token', authController.getNewPassword);
-router.post('/new-password', authController.postNewPassword);
+router.post('/new-password', [
+    body('password', 'Please enter a password only numbers and test and at least 5 characters.')
+    .isLength({
+        min: 8
+    })
+    .isAlphanumeric()
+    .trim(),
+    body('confirmPassword')
+    .trim()
+    .custom((value, {
+        req
+    }) => {
+        console.log(value);
+        console.log(req.body.password);
+        if (value !== req.body.password) {
+            console.log('inside if statement');
+            throw new Error('Passwords have to match.');
+        }
+        return true
+    })
+], authController.postNewPassword);
 
 module.exports = router;
