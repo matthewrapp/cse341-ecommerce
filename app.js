@@ -90,15 +90,15 @@ app.use(authRoutes);
 // app.use('/500', errorController.get500);
 // if no page is found --> send to 404 page
 app.use(errorController.get404);
-app.use((error, req, res, next) => {
-    // res.status(error.httpStatusCode).render(...);
-    // res.redirect('/500');
-    res.status(500).render('500', {
-        docTitle: 'Error!',
-        path: '/500',
-        isAuthenticated: req.session.isLoggedIn
-    });
-});
+// app.use((error, req, res, next) => {
+//     // res.status(error.httpStatusCode).render(...);
+//     // res.redirect('/500');
+//     res.status(500).render('500', {
+//         docTitle: 'Error!',
+//         path: '/500',
+//         isAuthenticated: req.session.isLoggedIn
+//     });
+// });
 
 const corsOptions = {
     orgin: 'https://cse341matthewrapp-ecommerce.herokuapp.com',

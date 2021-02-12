@@ -25,6 +25,7 @@ exports.postAddProduct = (req, res, next) => {
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
+    const category = req.body.category;
     const price = req.body.price;
     const errors = validationResult(req);
 
@@ -38,7 +39,8 @@ exports.postAddProduct = (req, res, next) => {
                 title: title,
                 imageUrl: imageUrl,
                 description: description,
-                price: price,
+                category: category,
+                price: price
             },
             errorMessage: errors.array()[0].msg,
             validationErrors: errors.array()
@@ -49,6 +51,7 @@ exports.postAddProduct = (req, res, next) => {
         price: price,
         description: description,
         imageUrl: imageUrl,
+        category: category,
         userId: req.user
     });
     product.save() // this save method is created by mongoose
@@ -56,21 +59,6 @@ exports.postAddProduct = (req, res, next) => {
             res.redirect('/admin/products');
         })
         .catch(err => {
-            // res.redirect('/500');
-            // return res.status(500).render('admin/edit-product', {
-            //     docTitle: 'Add Product Page',
-            //     path: '/admin/add-product',
-            //     editing: false,
-            //     hasError: true,
-            //     product: {
-            //         title: title,
-            //         imageUrl: imageUrl,
-            //         description: description,
-            //         price: price,
-            //     },
-            //     errorMessage: 'Database opperation failed. Please, try again.',
-            //     validationErrors: []
-            // })
             const error = new Error(err);
             error.httpStatusCode = 500;
             return next(error);
@@ -86,6 +74,7 @@ exports.getEditProduct = (req, res, next) => {
     const prodId = req.params.productId;
     Product.findById(prodId)
         .then(product => {
+            console.log(product)
             if (!product) {
                 return res.redirect('/');
             }
@@ -109,6 +98,7 @@ exports.postEditProduct = (req, res, next) => {
     const prodId = req.body.productId;
     const updatedTitle = req.body.title;
     const updatedPrice = req.body.price;
+    const updatedCategory = req.body.category;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDescription = req.body.description;
     const errors = validationResult(req);
@@ -124,6 +114,7 @@ exports.postEditProduct = (req, res, next) => {
                 imageUrl: updatedImageUrl,
                 description: updatedDescription,
                 price: updatedPrice,
+                category: updatedCategory,
                 _id: prodId
             },
             errorMessage: errors.array()[0].msg,
@@ -140,6 +131,7 @@ exports.postEditProduct = (req, res, next) => {
             product.price = updatedPrice;
             product.description = updatedDescription;
             product.imageUrl = updatedImageUrl;
+            product.category = updatedCategory;
             return product.save()
                 .then(result => {
                     console.log('admin.js, postEditProduct UPDATED PRODUCT: ' + JSON.stringify(result, getCircularReplacer()));
