@@ -31,6 +31,16 @@ router.post('/add-product',
         .isURL(),
         body('price', 'This is the price err msg')
         .isFloat(),
+        check('category', 'Need to select a category.')
+        .custom((value, {
+            req
+        }) => {
+            if (value === 'none') {
+                // throw new Error('Need to select a category.')
+                return false
+            }
+            return true
+        }),
         body('description', 'This is the descriptin err msg')
         .isLength({
             min: 15,
@@ -52,6 +62,16 @@ router.post('/edit-product', [
     .isURL(),
     body('price', 'This is the price err msg')
     .isFloat(),
+    check('category', 'Need to select a category.')
+    .custom((value, {
+        req
+    }) => {
+        if (value === 'none') {
+            // throw new Error('Need to select a category.')
+            return false
+        }
+        return true
+    }),
     body('description', 'This is the descriptin err msg')
     .isLength({
         min: 15,

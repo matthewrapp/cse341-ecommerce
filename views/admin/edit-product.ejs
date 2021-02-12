@@ -31,6 +31,36 @@
                     value="<% if (editing || hasError) { %><%= product.price %><% } %>">
             </div>
             <div class="form-control">
+                <label for="category">Select a Category</label>
+                <select class="<%= validationErrors.find(err => err.param === 'category') ? 'invalid' : '' %>"
+                    name="category" id="category">
+                    <option value="none"
+                        <% if (editing || hasError) { if (product.category === '' || product.category == null) {%>
+                        selected disabled hidden <% } } %>>
+                        Select an Option
+                    </option>
+                    <option value="guitars" <% if (editing || hasError) { if (product.category === 'guitars') {%>
+                        selected <% } } %>>Guitars
+                    </option>
+                    <option value="bass-guitars"
+                        <% if (editing || hasError) { if (product.category === 'bass-guitars') {%> selected <% } } %>>
+                        Bass Guitars</option>
+                    <option value="keyboards" <% if (editing || hasError) { if (product.category === 'keyboards') {%>
+                        selected <% } } %>>
+                        Keyboards & Synth
+                    </option>
+                    <option value="pianos" <% if (editing || hasError) { if (product.category === 'pianos') {%> selected
+                        <% } } %>>Pianos</option>
+                    <option value="studio" <% if (editing || hasError) { if (product.category === 'studio') {%> selected
+                        <% } } %>>Studio & Recording</option>
+                    <option value="microphones"
+                        <% if (editing || hasError) { if (product.category === 'microphones') {%> selected <% } } %>>
+                        Microphones</option>
+                    <option value="drums" <% if (editing || hasError) { if (product.category === 'drums') {%> selected
+                        <% } } %>>Drums & Percussion</option>
+                </select>
+            </div>
+            <div class="form-control">
                 <label for="description">Description</label>
                 <textarea class="<%= validationErrors.find(err => err.param === 'description') ? 'invalid' : '' %>"
                     name="description" id="description"
