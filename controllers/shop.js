@@ -4,6 +4,7 @@ const Order = require('../models/order');
 
 // import helper utitlities
 const getCircularReplacer = require('../utilities/circular-replacer');
+const product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
     Product.find()
@@ -11,7 +12,8 @@ exports.getProducts = (req, res, next) => {
             res.render('shop/product-list', {
                 docTitle: 'All Products Page',
                 path: '/products',
-                prods: products
+                prods: products,
+                searchProduct: null
             });
         })
         .catch(err => {
@@ -29,7 +31,34 @@ exports.getProduct = (req, res, next) => {
                 docTitle: product.title + ' Page',
                 product: product,
                 path: '/products',
+                searchProduct: null
                 // isAuthenticated: req.session.isLoggedIn
+            })
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+};
+
+exports.getSearchedProduct = (req, res, next) => {
+    const searchItem = req.query.search;
+    // console.log(Product.find().then(products => {
+    //     consle.log(products);o
+    // }))
+    Product.find({
+            'title': {
+                $regex: searchItem,
+                $options: 'i'
+            }
+        })
+        .then(product => {
+            res.render('shop/product-list', {
+                docTitle: 'Products Page',
+                prods: null,
+                searchProduct: product,
+                path: 'products'
             })
         })
         .catch(err => {
@@ -45,7 +74,8 @@ exports.getIndex = (req, res, next) => {
             res.render('shop/index', {
                 docTitle: 'Shop Page',
                 path: '/',
-                prods: products
+                prods: products,
+                searchProduct: null
             });
         })
         .catch(err => {

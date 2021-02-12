@@ -1,0 +1,26 @@
+.main-header__item-list .search-bar--wrapper {
+    border: 1px solid #e4e4e4;
+    border-radius: 50px;
+    padding: 6px 20px;
+}
+
+.main-header__item-list .search-icon::before {
+    font-size: 16px;
+    color: #b4b4b4;
+}
+
+.main-header__item-list .search-bar {
+    border: none;
+    padding-left: 14px;
+}
+
+.main-header__item-list .search-bar:focus {
+    outline: none;
+}
+
+.main-header__item-list .search-bar::placeholder {
+    color: #d5d5d5;
+    letter-spacing: .5px;
+    font-weight: 400;
+    font-family: inherit;
+}

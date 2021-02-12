@@ -1,6 +1,17 @@
 <div class="backdrop"></div>
 <header class="main-header">
     <button id="side-menu-toggle">Menu</button>
+    <ul class="mobile-search--div main-header__item-list">
+        <li class="">
+            <form action="/query-searched-items" method="GET">
+                <div class="search-bar--wrapper">
+                    <i style="font-size: 20px;" class="fas fa-search search-icon"></i>
+                    <input class="search-bar" type="search" placeholder="Search For Items..." name="search" />
+                </div>
+                <!-- <button class="btn" type="submit">Search</button> -->
+            </form>
+        </li>
+    </ul>
     <nav class="main-header__nav">
         <ul class="main-header__item-list">
             <li class="main-header__item">
@@ -21,6 +32,19 @@
             </li>
             <% } %>
         </ul>
+
+        <ul class="main-header__item-list">
+            <li class="">
+                <form action="/query-searched-items" method="GET">
+                    <div class="search-bar--wrapper">
+                        <i style="font-size: 20px;" class="fas fa-search search-icon"></i>
+                        <input class="search-bar" type="search" placeholder="Search For Items..." name="search" />
+                    </div>
+                    <!-- <button class="btn" type="submit">Search</button> -->
+                </form>
+            </li>
+        </ul>
+
         <ul class="main-header__item-list">
             <% if (!isAuthenticated) { %>
             <li class="main-header__item">
@@ -48,7 +72,6 @@
         </ul>
     </nav>
 </header>
-
 <nav class="mobile-nav">
     <ul class="mobile-nav__item-list">
         <li class="mobile-nav__item">
@@ -85,7 +108,7 @@
         <li class="mobile-nav__item">
             <form action="/logout" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <button type="submit">Logout</button>
+                <button class="btn" type="submit">Logout</button>
             </form>
         </li>
         <li class="mobile-nav__item">
@@ -95,3 +118,4 @@
         <% } %>
     </ul>
 </nav>
+</div>
