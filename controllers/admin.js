@@ -53,6 +53,7 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: imageUrl,
         category: category,
         dateCreated: new Date(),
+        lastUpdated: new Date(),
         userId: req.user
     });
     product.save() // this save method is created by mongoose
@@ -133,6 +134,7 @@ exports.postEditProduct = (req, res, next) => {
             product.description = updatedDescription;
             product.imageUrl = updatedImageUrl;
             product.category = updatedCategory;
+            product.lastUpdated = new Date();
             return product.save()
                 .then(result => {
                     console.log('admin.js, postEditProduct UPDATED PRODUCT: ' + JSON.stringify(result, getCircularReplacer()));

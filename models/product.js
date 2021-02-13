@@ -32,7 +32,11 @@ const productSchema = new Schema({
     },
     dateCreated: {
         type: Date,
-        required: true
+        required: false
+    },
+    lastUpdated: {
+        type: Date,
+        required: false
     },
     userId: {
         type: Schema.Types.ObjectId,
