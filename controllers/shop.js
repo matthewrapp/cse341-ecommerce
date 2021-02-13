@@ -58,7 +58,7 @@ exports.getSearchedProduct = (req, res, next) => {
                 docTitle: 'Products Page',
                 prods: null,
                 searchProduct: product,
-                path: 'products'
+                path: '/products'
             })
         })
         .catch(err => {
@@ -85,6 +85,25 @@ exports.getIndex = (req, res, next) => {
         });
 };
 
+exports.getProductsByCategory = (req, res, next) => {
+    products = req.query.category
+    Product.find({
+            'category': products
+        }).then(products => {
+            res.render('shop/product-list', {
+                docTitle: 'Shop Page',
+                path: '/category',
+                prods: products,
+                searchProduct: null
+            })
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+}
+
 exports.getCart = (req, res, next) => {
     req.user.populate('cart.items.productId')
         .execPopulate()
@@ -104,6 +123,7 @@ exports.getCart = (req, res, next) => {
 };
 
 exports.postCart = (req, res, next) => {
+    console.log(req.body.created_at);
     const prodId = req.body.productId;
     Product.findById(prodId)
         .then(product => {

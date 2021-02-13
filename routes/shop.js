@@ -29,5 +29,6 @@ router.get('/query-searched-items',
         check('search')
         .trim()
     ], shopController.getSearchedProduct);
+router.get('/getProductCategory', shopController.getProductsByCategory);
 
 module.exports = router;

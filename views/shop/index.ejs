@@ -9,6 +9,53 @@
         </div>
     </div>
     <main>
+        <div class="custom-section">
+            <h2 class="section--heading">Shop By Category</h2>
+            <div class="flex-row justify-content-between">
+                <!-- GUITARS -->
+                <form class="card category-card text-decoration--none" action="/getProductCategory" method="GET"
+                    style="background-image: url('https://static.guitarcenter.com/static/gc/2021/tent-pole/president-day/gc-md-dp-pres-day-031-02-04-21.jpg');">
+                    <input type="hidden" name="category" value="guitars" />
+                    <button type="submit" class="fake-btn">View More</button>
+                </form>
+                <!-- KEYBOARDS -->
+                <form class="card category-card text-decoration--none" action="/getProductCategory" method="GET"
+                    style="background-image:
+                    url('https://static.guitarcenter.com/static/gc/2021/tent-pole/president-day/gc-md-dp-pres-day-034-02-04-21.jpg');">
+                    <input type="hidden" name="category" value="keyboards" />
+                    <button type="submit" class="fake-btn">View More</button>
+                </form>
+                <!-- BASS GUITARS -->
+                <form class="card category-card text-decoration--none" action="/getProductCategory" method="GET"
+                    style="background-image:
+                    url('https://static.guitarcenter.com/static/gc/2021/tent-pole/president-day/gc-md-dp-pres-day-032-02-04-21.jpg');">
+                    <input type="hidden" name="category" value="bass-guitars" />
+                    <button type="submit" class="fake-btn">View More</button>
+                </form>
+                <!-- STUDIO -->
+                <form class="card category-card text-decoration--none" action="/getProductCategory" method="GET"
+                    style="background-image:
+                    url('https://static.guitarcenter.com/static/gc/2021/tent-pole/president-day/gc-md-dp-pres-day-036-02-04-21.jpg');">
+                    <input type="hidden" name="category" value="studio" />
+                    <button type="submit" class="fake-btn">View More</button>
+                </form>
+                <!-- STUDIO -->
+                <form class="card category-card text-decoration--none" action="/getProductCategory" method="GET"
+                    style="background-image:
+                    url('https://static.guitarcenter.com/static/gc/2021/tent-pole/president-day/gc-md-dp-pres-day-038-02-04-21.jpg');">
+                    <input type="hidden" name="category" value="microphones" />
+                    <button type="submit" class="fake-btn">View More</button>
+                </form>
+                <!-- DRUMS -->
+                <form class="card category-card text-decoration--none" action="/getProductCategory" method="GET"
+                    style="background-image:
+                    url('https://static.guitarcenter.com/static/gc/2021/tent-pole/president-day/gc-md-dp-pres-day-035-02-04-21.jpg');">
+                    <input type="hidden" name="category" value="drums" />
+                    <button type="submit" class="fake-btn">View More</button>
+                </form>
+            </div>
+        </div>
+
         <% if (prods.length > 0) { %>
         <div class="grid">
             <% for (let product of prods) { %>
@@ -38,5 +85,6 @@
         <% } else { %>
         <h1>No Products Found</h1>
         <% } %>
+
     </main>
     <%- include('../includes/end.ejs') %>

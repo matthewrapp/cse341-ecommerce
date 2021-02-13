@@ -58,6 +58,9 @@
                         Microphones</option>
                     <option value="drums" <% if (editing || hasError) { if (product.category === 'drums') {%> selected
                         <% } } %>>Drums & Percussion</option>
+                    <option value="accessories"
+                        <% if (editing || hasError) { if (product.category === 'accessories') {%> selected <% } } %>>
+                        Accessories</option>
                 </select>
             </div>
             <div class="form-control">
