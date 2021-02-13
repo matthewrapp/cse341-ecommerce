@@ -52,6 +52,7 @@ exports.postAddProduct = (req, res, next) => {
         description: description,
         imageUrl: imageUrl,
         category: category,
+        dateCreated: new Date(),
         userId: req.user
     });
     product.save() // this save method is created by mongoose

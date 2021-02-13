@@ -15,16 +15,45 @@ main {
     margin: auto;
 }
 
+.text-decoration--none {
+    text-decoration: none;
+}
+
 form {
     display: inline;
+}
+
+.custom-section {
+    width: 80%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.section--heading {
+    margin-bottom: 40px
 }
 
 h1 {
     font-size: 44px;
 }
 
+h2 {
+    font-size: 36px;
+}
+
 .centered {
     text-align: center;
+}
+
+.flex-row {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.flex-row.justify-content-between {
+    justify-content: space-between;
 }
 
 .image {
@@ -169,41 +198,6 @@ h1 {
     align-items: stretch;
 }
 
-.card:hover{
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-}
-
-.card__header,
-.card__content {
-    padding: 1rem;
-}
-
-.card__header h1,
-.card__content h1,
-.card__content h2,
-.card__content p {
-    margin: 0;
-}
-
-.card__image {
-    width: 100%;
-    padding: 20px;
-}
-
-.card__image img {
-    width: 100%;
-}
-
-.card__actions {
-    padding: 1rem;
-    text-align: center;
-}
-
-.card__actions button,
-.card__actions a {
-    margin: 0 0.25rem;
-}
-
 .btn {
     display: inline-block;
     padding: 0.25rem 1rem;
@@ -214,6 +208,7 @@ h1 {
     background: #00a894;
     border-radius: 3px;
     cursor: pointer;
+    transition-duration: .2s;
 }
 
 .btn-outline {
@@ -226,29 +221,52 @@ h1 {
     background: #fff;
     border-radius: 3px;
     cursor: pointer;
+    transition-duration: .2s;
+}
+
+.fake-btn {
+    align-self: flex-end;
+    background: #fff;
+    border-radius: 4px;
+    padding: 6px 20px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    box-shadow: 0 0 25px 1px #000;
+    color: #00a894;
+    transition-duration: .2s;
+}
+
+.fake-btn:hover {
+    background-color: #000;
+    color: #fff;
+    transition-duration: .2s;
 }
 
 .btn:hover,
 .btn:active {
     background-color: #fff;
     color: #00a894;
+    transition-duration: .2s;
 }
 
 .btn-outline:hover,
 .btn-outline:active {
     background-color: #00a894;
     color: #fff;
+    transition-duration: .2s;
 }
 
 .btn.danger {
     color: red;
     border-color: red;
+    transition-duration: .2s;
 }
 
 .btn.danger:hover,
 .btn.danger:active {
     background: red;
     color: white;
+    transition-duration: .2s;
 }
 
 .user-message {
