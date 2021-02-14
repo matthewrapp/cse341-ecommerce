@@ -100,7 +100,6 @@ exports.postLogin = (req, res, next) => {
                         req.session.user = user;
                         // need to call save if the page is loading too fast before the database can update the page
                         return req.session.save((err) => {
-                            console.log(err + ' within .then() within postLogin');
                             res.redirect('/');
                         });
                     }
@@ -116,7 +115,6 @@ exports.postLogin = (req, res, next) => {
                     });
                 })
                 .catch(err => {
-                    console.log('auth.js | postLogin | Error Handling: ' + err);
                     res.redirect('/login');
                 });
         })
@@ -135,7 +133,6 @@ exports.postSignup = (req, res, next) => {
     const confirmPassword = req.body.confirmPassword;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors.array());
         return res.status(422).render('auth/signup', {
             path: '/signup',
             docTitle: 'Signup Page',
@@ -182,7 +179,6 @@ exports.postSignup = (req, res, next) => {
 
 exports.postLogout = (req, res, next) => {
     req.session.destroy((err) => {
-        console.log(err + ', within postLogoutMethod')
         res.redirect('/');
     });
 };
@@ -205,7 +201,6 @@ exports.getReset = (req, res, next) => {
 exports.postReset = (req, res, next) => {
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
-            console.log('auth.js | postReset() | Error Handling: ' + err);
             return res.redirect('/reset');
         };
         // generate token from buffer
@@ -295,8 +290,6 @@ exports.postNewPassword = (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors.array());
-        console.log(errors.array()[0].msg)
         return res.render('auth/new-password' /* this is the view path */ , {
             path: '/new-password',
             docTitle: 'Update Password Page',

@@ -123,14 +123,12 @@ exports.getCart = (req, res, next) => {
 };
 
 exports.postCart = (req, res, next) => {
-    console.log(req.body.created_at);
     const prodId = req.body.productId;
     Product.findById(prodId)
         .then(product => {
             return req.user.addToCart(product);
         })
         .then(result => {
-            console.log(result);
             res.redirect('/cart');
         })
         .catch(err => {

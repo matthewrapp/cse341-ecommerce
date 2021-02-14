@@ -76,7 +76,6 @@ exports.getEditProduct = (req, res, next) => {
     const prodId = req.params.productId;
     Product.findById(prodId)
         .then(product => {
-            console.log(product)
             if (!product) {
                 return res.redirect('/');
             }
@@ -137,7 +136,7 @@ exports.postEditProduct = (req, res, next) => {
             product.lastUpdated = new Date();
             return product.save()
                 .then(result => {
-                    console.log('admin.js, postEditProduct UPDATED PRODUCT: ' + JSON.stringify(result, getCircularReplacer()));
+                    // console.log('admin.js, postEditProduct UPDATED PRODUCT: ' + JSON.stringify(result, getCircularReplacer()));
                     res.redirect('/admin/products');
                 })
         })
