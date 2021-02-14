@@ -44,7 +44,7 @@ router.post('/add-product',
         body('description', 'This is the descriptin err msg')
         .isLength({
             min: 15,
-            max: 250
+            max: 1500
         })
         .trim()
     ], isAuth, adminController.postAddProduct);
