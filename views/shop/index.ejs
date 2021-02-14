@@ -57,6 +57,8 @@
         </div>
 
         <% if (prods.length > 0) { %>
+        <hr />
+        <h2 class="section--heading" style="text-align: center;">Shop Our Products</h2>
         <div class="grid">
             <% for (let product of prods) { %>
             <article class="card product-item">
@@ -69,7 +71,7 @@
                 <div class="card__content">
                     <h2 class="product__price">$<%= product.price %></h2>
                     <p class="product__description">
-                        <%= product.description %>
+                        <%= product.description.substring(0, 70) + '.....' %>
                     </p>
                 </div>
                 <div class="card__actions">
