@@ -194,8 +194,10 @@ h2 {
 .grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: stretch;
+    max-width: 1200px;
+    margin: auto;
 }
 
 .btn {
@@ -259,13 +261,15 @@ h2 {
 .btn.danger {
     color: red;
     border-color: red;
+    background-color: red;
     transition-duration: .2s;
+    color: white;
 }
 
 .btn.danger:hover,
 .btn.danger:active {
-    background: red;
-    color: white;
+    background: white;
+    color: red;
     transition-duration: .2s;
 }
 
