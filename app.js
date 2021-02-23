@@ -4,6 +4,7 @@ const path = require('path');
 // Third party packages
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const session = require('express-session');
@@ -39,6 +40,23 @@ const store = new MongoDBStore({
 // initial csurf protection/token
 const csrfProtection = csrf();
 
+// multer
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'images');
+    },
+    filename: (req, file, cb) => {
+        cb(null, new Date().toISOString() + '-' + file.originalname);
+    }
+});
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+
 // import ejs
 app.set('view engine', 'ejs');
 // telling express that the templates will be under the views folder | default is views | 2nd parameter
@@ -48,8 +66,15 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+// multer
+app.use(multer({
+    storage: fileStorage,
+    fileFilter: fileFilter
+}).single('image'));
+
 // static files | static files, path is automatically put into public folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(session({
     secret: 'my secret',
     resave: false,

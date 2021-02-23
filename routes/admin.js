@@ -27,8 +27,6 @@ router.post('/add-product',
             min: 3
         })
         .trim(),
-        body('imageUrl', 'This is the imageUrl err msg')
-        .isURL(),
         body('price', 'This is the price err msg')
         .isFloat(),
         check('category', 'Need to select a category.')
@@ -58,8 +56,6 @@ router.post('/edit-product', [
         min: 3
     })
     .trim(),
-    body('imageUrl', 'This is the imageUrl err msg')
-    .isURL(),
     body('price', 'This is the price err msg')
     .isFloat(),
     check('category', 'Need to select a category.')

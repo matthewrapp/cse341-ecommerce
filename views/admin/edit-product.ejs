@@ -12,17 +12,21 @@
         </div>
         <% } %>
         <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>"
-            method="POST">
+            method="POST" enctype="multipart/form-data">
             <div class="form-control">
                 <label for="title">Title</label>
                 <input class="<%= validationErrors.find(err => err.param === 'title') ? 'invalid' : '' %>" name="title"
                     id="title" type="text" value="<% if (editing || hasError) { %><%= product.title %><% } %>" />
             </div>
-            <div class="form-control">
+            <!-- <div class="form-control">
                 <label for="imageUrl">Image URL</label>
-                <input class="<%= validationErrors.find(err => err.param === 'imageUrl') ? 'invalid' : '' %>"
+                <input class="<%#= validationErrors.find(err => err.param === 'imageUrl') ? 'invalid' : '' %>"
                     name="imageUrl" id="imageUrl" type="text"
-                    value="<% if (editing || hasError) { %><%= product.imageUrl %><% } %>">
+                    value="<%# if (editing || hasError) { %><%#= product.imageUrl %><%# } %>">
+            </div> -->
+            <div class="form-control">
+                <label for="image">Image</label>
+                <input name="image" id="image" type="file">
             </div>
             <div class="form-control">
                 <label for="price">Price</label>
