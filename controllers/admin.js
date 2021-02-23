@@ -1,6 +1,7 @@
 // import Product class from models
 const Product = require('../models/product');
 
+// import mongoose
 const mongoose = require('mongoose');
 
 const {
@@ -9,6 +10,7 @@ const {
 
 // import helper utitlities
 const getCircularReplacer = require('../utilities/circular-replacer');
+const fileHelper = require('../utilities/file');
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
@@ -23,11 +25,29 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
+    // const imageUrl = req.body.imageUrl;
+    const image = req.file;
     const description = req.body.description;
     const category = req.body.category;
     const price = req.body.price;
     const errors = validationResult(req);
+
+    if (!image) {
+        return res.status(422).render('admin/edit-product', {
+            docTitle: 'Add Product Page',
+            path: '/admin/add-product',
+            editing: false,
+            hasError: true,
+            product: {
+                title: title,
+                description: description,
+                category: category,
+                price: price
+            },
+            errorMessage: 'Attached file is not an image',
+            validationErrors: []
+        })
+    }
 
     if (!errors.isEmpty()) {
         return res.status(422).render('admin/edit-product', {
@@ -46,6 +66,10 @@ exports.postAddProduct = (req, res, next) => {
             validationErrors: errors.array()
         })
     }
+    
+    // image path
+    const imageUrl = '/' + image.path;
+
     const product = new Product({
         title: title,
         price: price,
@@ -100,7 +124,8 @@ exports.postEditProduct = (req, res, next) => {
     const updatedTitle = req.body.title;
     const updatedPrice = req.body.price;
     const updatedCategory = req.body.category;
-    const updatedImageUrl = req.body.imageUrl;
+    // const updatedImageUrl = req.body.imageUrl;
+    const updatedImage = req.file;
     const updatedDescription = req.body.description;
     const errors = validationResult(req);
 
@@ -112,7 +137,6 @@ exports.postEditProduct = (req, res, next) => {
             hasError: true,
             product: {
                 title: updatedTitle,
-                imageUrl: updatedImageUrl,
                 description: updatedDescription,
                 price: updatedPrice,
                 category: updatedCategory,
@@ -131,7 +155,20 @@ exports.postEditProduct = (req, res, next) => {
             product.title = updatedTitle;
             product.price = updatedPrice;
             product.description = updatedDescription;
-            product.imageUrl = updatedImageUrl;
+            if (updatedImage) {
+                
+                if (product.imageUrl.charAt(0) == '/') {
+                    let imagePath = product.imageUrl;
+                    if (imagePath.charAt(0) == '/') {
+                        fileHelper.deleteFile(imagePath.substr(1))
+                    } else {
+                        fileHelper.deleteFile(imagePath);
+                    }
+                }
+
+                // fileHelper.deleteFile(product.imageUrl);
+                product.imageUrl = '/' + updatedImage.path;
+            }
             product.category = updatedCategory;
             product.lastUpdated = new Date();
             return product.save()
@@ -167,9 +204,22 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId;
-    Product.deleteOne({
-            _id: prodId,
-            userId: req.user._id
+    Product.findById(prodId)
+        .then(product => {
+            if (!product) {
+                return next(new Error('Product Not Found!'));
+            }
+
+            if (product.imageUrl.charAt(0) == '/') {
+                let imagePath = product.imageUrl;
+                if (imagePath.charAt(0) == '/') {
+                    fileHelper.deleteFile(imagePath.substr(1))
+                } else {
+                    fileHelper.deleteFile(imagePath);
+                }
+            }
+
+            return Product.deleteOne({ _id: prodId, userId: req.user._id });
         })
         .then(() => {
             res.redirect('/admin/products');
